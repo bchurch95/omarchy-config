@@ -17,11 +17,11 @@ require("hypr.autostart")
 require("default.hypr.toggles")
 
 -- Add any other personal Hyprland configuration below.
--- Apple Music background dropdown / scratchpad window rules (dynamically centered on any monitor)
+-- Apple Music background dropdown / scratchpad window rules (anchored under top bar, dynamically centered)
 o.window("(^.+-music\\.apple\\.com__.*$|^chrome-music\\.apple\\.com.*$|apple-music)", {
   tag = "-chromium-based-browser",
   float = true,
   size = { 880, 560 },
-  move = { "(50% - 440)", "36" },
+  move = { "(monitor_w-880)/2", "36" },
   workspace = "special:music silent",
 })
