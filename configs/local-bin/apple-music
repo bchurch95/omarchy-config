@@ -6,6 +6,10 @@ DATA_DIR="${XDG_DATA_HOME:-$HOME/.local/share}/omarchy/webapps/apple-music"
 
 mkdir -p "$DATA_DIR"
 
+if [[ -z "${HYPRLAND_INSTANCE_SIGNATURE:-}" ]]; then
+  export HYPRLAND_INSTANCE_SIGNATURE="$(ls -t /run/user/$(id -u)/hypr/ 2>/dev/null | head -n1)"
+fi
+
 SILENT=0
 PASSTHROUGH_ARGS=()
 
@@ -21,7 +25,7 @@ for arg in "$@"; do
 done
 
 # Check if Apple Music window is currently open
-WINDOW_EXISTS=$(hyprctl clients -j 2>/dev/null | jq -r '.[] | select((.class | test("music\\.apple\\.com|apple-music"; "i")) or (.initialTitle | test("music\\.apple\\.com"; "i")) or (.title | test("Apple.Music"; "i"))) | .address' | head -n1)
+WINDOW_EXISTS=$(hyprctl clients -j 2>/dev/null | jq -r '.[] | select((.class | test("music\\.apple\\.com|apple-music"; "i")) or (.initialTitle | test("music\\.apple\\.com"; "i")) or (.title | test("Apple.Music"; "i"))) | .address' 2>/dev/null | head -n1)
 
 if [[ -n "$WINDOW_EXISTS" ]]; then
   if (( ! SILENT )); then
