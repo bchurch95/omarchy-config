@@ -1,0 +1,111 @@
+{
+  "version": 1,
+  "idle": {
+    "screensaver": 150,
+    "lock": 300
+  },
+  "bar": {
+    "position": "top",
+    "transparent": false,
+    "centerAnchor": "omarchy.clock",
+    "layout": {
+      "left": [
+        {
+          "id": "omarchy.menu"
+        },
+        {
+          "id": "omarchy.workspaces"
+        },
+        {
+          "id": "ben.apple-music-button"
+        },
+        {
+          "id": "ben.media"
+        }
+      ],
+      "center": [
+        {
+          "id": "omarchy.indicators"
+        },
+        {
+          "id": "omarchy.clock",
+          "format": "dddd h:mm AP",
+          "formatAlt": "d MMMM 'W'ww yyyy",
+          "verticalFormat": "h\n—\nmm\nAP"
+        },
+        {
+          "id": "omarchy.weather"
+        },
+        {
+          "id": "io.github.jainprashul.omacast"
+        },
+        {
+          "id": "omarchy.system-update"
+        }
+      ],
+      "right": [
+        {
+          "id": "sysinfo",
+          "type": "qml"
+        },
+        {
+          "id": "omarchy.tray"
+        },
+        {
+          "id": "omamail"
+        },
+        {
+          "id": "jankeesvw.time-machine"
+        },
+        {
+          "id": "isaact135.network-shares"
+        },
+        {
+          "id": "io.github.zachwilke.mx"
+        },
+        {
+          "id": "nosignal.omasend"
+        },
+        {
+          "id": "io.github.thisisgm.omapods"
+        },
+        {
+          "id": "jkoestinger.vpn"
+        },
+        {
+          "id": "ben.agents",
+          "refreshIntervalSec": 60
+        },
+        {
+          "id": "omarchy.bluetooth"
+        },
+        {
+          "id": "ben.network"
+        },
+        {
+          "id": "omarchy.audio"
+        },
+        {
+          "id": "io.github.vuhungthang.monitor-studio"
+        },
+        {
+          "id": "omarchy.power",
+          "showPercentage": false
+        }
+      ]
+    }
+  },
+  "plugins": [
+    {
+      "id": "nosignal.omasend"
+    }
+  ],
+  "disabledPlugins": [
+    "omarchy.media",
+    "omarchy.agents"
+  ],
+  "cloneSourceRestores": [
+    "ben.media",
+    "ben.agents"
+  ]
+}
