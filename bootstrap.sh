@@ -9,12 +9,17 @@ DEST_DIR="$HOME/Work/omarchy-config"
 
 echo "==> Setting up Omarchy preferences..."
 
-if ! command -v git >/dev/null 2>&1; then
-  echo "--> Installing git..."
-  sudo pacman -S --noconfirm git
-fi
+# Ensure core prerequisites exist
+for pkg in git jq curl; do
+  if ! command -v "$pkg" >/dev/null 2>&1; then
+    echo "--> Installing missing dependency: $pkg..."
+    if command -v pacman >/dev/null 2>&1; then
+      sudo pacman -S --noconfirm "$pkg" || true
+    fi
+  fi
+done
 
-if [[ -d "$DEST_DIR" ]]; then
+if [[ -d "$DEST_DIR/.git" ]]; then
   echo "--> Repository already exists in $DEST_DIR. Pulling latest..."
   git -C "$DEST_DIR" pull --rebase
 else

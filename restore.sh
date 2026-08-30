@@ -29,10 +29,22 @@ Options:
   --all         Deploy all user configurations and synchronize shell plugins
   --configs     Deploy only user configurations (~/.config, ~/.local/bin, ~/.local/share)
   --plugins     Clone and synchronize all curated plugins via bchurch95/omarchy-plugins
+  --packages    Install explicit application packages via pacman / yay
   --help        Show this help message
 
 Running without arguments will launch the interactive menu.
 EOF
+}
+
+check_prerequisites() {
+  for pkg in git jq curl; do
+    if ! command -v "$pkg" >/dev/null 2>&1; then
+      log_info "Installing required utility: $pkg..."
+      if command -v pacman >/dev/null 2>&1; then
+        sudo pacman -S --noconfirm "$pkg" || true
+      fi
+    fi
+  done
 }
 
 restore_user_configs() {
@@ -49,11 +61,17 @@ restore_user_configs() {
   cp -v "$CONFIGS_DIR/omarchy/bar/modules/"*.qml "$HOME/.config/omarchy/bar/modules/"
   log_success "Omarchy shell layout and custom bar modules (sysinfo, kdeconnect) restored."
 
-  # Custom Plugins (ben.apple-music-button)
-  if [[ -d "$CONFIGS_DIR/plugins/ben.apple-music-button" ]]; then
-    mkdir -p "$HOME/.config/omarchy/plugins/ben.apple-music-button"
-    cp -rv "$CONFIGS_DIR/plugins/ben.apple-music-button/"* "$HOME/.config/omarchy/plugins/ben.apple-music-button/"
-    log_success "Local plugin ben.apple-music-button restored."
+  # Custom / Local Plugins (ben.apple-music-button, ben.media, etc.)
+  if [[ -d "$CONFIGS_DIR/plugins" ]]; then
+    mkdir -p "$HOME/.config/omarchy/plugins"
+    for plugin_dir in "$CONFIGS_DIR/plugins/"*; do
+      if [[ -d "$plugin_dir" ]]; then
+        plugin_name="$(basename "$plugin_dir")"
+        mkdir -p "$HOME/.config/omarchy/plugins/$plugin_name"
+        cp -rv "$plugin_dir/"* "$HOME/.config/omarchy/plugins/$plugin_name/"
+        log_success "Local plugin $plugin_name restored."
+      fi
+    done
   fi
 
   # Custom Themes
@@ -107,10 +125,11 @@ restore_user_configs() {
 }
 
 restore_plugins() {
+  check_prerequisites
   log_info "Synchronizing Omarchy Shell Plugins..."
   local PLUGINS_REPO_DIR="$HOME/Work/omarchy-plugins"
 
-  if [[ ! -d "$PLUGINS_REPO_DIR" ]]; then
+  if [[ ! -d "$PLUGINS_REPO_DIR/.git" ]]; then
     mkdir -p "$HOME/Work"
     log_info "Cloning bchurch95/omarchy-plugins repository..."
     git clone https://github.com/bchurch95/omarchy-plugins.git "$PLUGINS_REPO_DIR"
@@ -127,11 +146,31 @@ restore_plugins() {
   fi
 }
 
+restore_packages() {
+  local PKG_FILE="$CONFIGS_DIR/packages/explicit-packages.txt"
+  if [[ ! -f "$PKG_FILE" ]]; then
+    log_warn "Package list not found at $PKG_FILE."
+    return 1
+  fi
+
+  log_info "Installing packages from $PKG_FILE..."
+  local pkgs
+  pkgs=$(awk '{print $1}' "$PKG_FILE")
+
+  if command -v yay >/dev/null 2>&1; then
+    yay -S --needed --noconfirm $pkgs || true
+  elif command -v pacman >/dev/null 2>&1; then
+    sudo pacman -S --needed --noconfirm $pkgs || true
+  fi
+  log_success "Packages installation attempted."
+}
+
 # Main Execution
 ACTION="${1:-}"
 
 case "$ACTION" in
   --all)
+    check_prerequisites
     restore_user_configs
     restore_plugins
     log_success "Complete desktop preferences restoration finished!"
@@ -142,6 +181,9 @@ case "$ACTION" in
   --plugins)
     restore_plugins
     ;;
+  --packages)
+    restore_packages
+    ;;
   --help|-h)
     usage
     ;;
@@ -150,16 +192,19 @@ case "$ACTION" in
     echo "1) Restore All (User Configs, Themes, Terminals & Shell Plugins)"
     echo "2) Restore User Configs Only (~/.config, ~/.local)"
     echo "3) Restore & Synchronize Shell Plugins"
+    echo "4) Install Application Packages"
     echo "q) Quit"
-    read -rp "Select option [1-3/q]: " choice
+    read -rp "Select option [1-4/q]: " choice
     case "$choice" in
       1)
+        check_prerequisites
         restore_user_configs
         restore_plugins
         log_success "All components successfully restored!"
         ;;
       2) restore_user_configs ;;
       3) restore_plugins ;;
+      4) restore_packages ;;
       *) echo "Exiting without changes." ;;
     esac
     ;;

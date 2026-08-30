@@ -1,6 +1,5 @@
-# Custom Server Aliases
-alias cortanna='ssh cortanna'
-alias cortana='ssh cortana'
+# Add ~/.local/bin to PATH if not already present
+[[ ":$PATH:" != *":$HOME/.local/bin:"* ]] && export PATH="$HOME/.local/bin:$PATH"
 
 # Plugin update aliases
 alias update-plugins='omarchy plugin update --yes'
