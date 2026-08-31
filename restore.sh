@@ -105,8 +105,8 @@ restore_user_configs() {
   ln -sf chrome-flags.conf "$HOME/.config/chromium-flags.conf"
 
   mkdir -p "$HOME/.local/bin"
-  cp -v "$CONFIGS_DIR/local-bin/apple-music" "$HOME/.local/bin/apple-music"
-  chmod +x "$HOME/.local/bin/apple-music"
+  cp -v "$CONFIGS_DIR/local-bin/"* "$HOME/.local/bin/"
+  chmod +x "$HOME/.local/bin/"*
 
   mkdir -p "$HOME/.local/share/applications"
   cp -v "$CONFIGS_DIR/applications/Apple Music.desktop" "$HOME/.local/share/applications/Apple Music.desktop"
