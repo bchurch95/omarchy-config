@@ -59,7 +59,16 @@ restore_user_configs() {
   mkdir -p "$HOME/.config/omarchy/bar/modules"
   cp -v "$CONFIGS_DIR/omarchy/shell.json" "$HOME/.config/omarchy/shell.json"
   cp -v "$CONFIGS_DIR/omarchy/bar/modules/"*.qml "$HOME/.config/omarchy/bar/modules/"
-  log_success "Omarchy shell layout and custom bar modules (sysinfo, kdeconnect) restored."
+  if [[ -d "$CONFIGS_DIR/omarchy/shell-profiles" ]]; then
+    mkdir -p "$HOME/.config/omarchy/shell-profiles"
+    cp -rv "$CONFIGS_DIR/omarchy/shell-profiles/"* "$HOME/.config/omarchy/shell-profiles/"
+  fi
+  if [[ -d "$CONFIGS_DIR/omarchy/hooks" ]]; then
+    mkdir -p "$HOME/.config/omarchy/hooks"
+    cp -rv "$CONFIGS_DIR/omarchy/hooks/"* "$HOME/.config/omarchy/hooks/"
+    find "$HOME/.config/omarchy/hooks" -type f -name "*.hook" -exec chmod +x {} +
+  fi
+  log_success "Omarchy shell layout, hooks, shell-profiles, and custom bar modules restored."
 
   # Custom / Local Plugins (ben.apple-music-button, ben.media, etc.)
   if [[ -d "$CONFIGS_DIR/plugins" ]]; then

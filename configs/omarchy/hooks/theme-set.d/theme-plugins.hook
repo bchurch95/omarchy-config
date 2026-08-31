@@ -1,0 +1,25 @@
+#!/usr/bin/env bash
+# ==============================================================================
+# Theme-Set Hook: Dynamic Per-Theme Shell Plugins & Layout Loader
+# Invoked by Omarchy whenever the theme changes: $1 = theme slug (e.g. tokyo-night)
+# ==============================================================================
+
+set -euo pipefail
+
+THEME_SLUG="${1:-}"
+[[ -n "$THEME_SLUG" ]] || exit 0
+
+PROFILES_DIR="$HOME/.config/omarchy/shell-profiles"
+THEME_DIR="$HOME/.config/omarchy/themes/$THEME_SLUG"
+TARGET_SHELL_JSON="$HOME/.config/omarchy/shell.json"
+
+# Resolution order:
+# 1. ~/.config/omarchy/themes/<theme>/shell.json
+# 2. ~/.config/omarchy/shell-profiles/<theme>.json
+# 3. ~/.config/omarchy/shell-profiles/default.json (optional fallback)
+
+if [[ -f "$THEME_DIR/shell.json" ]]; then
+  cp -f "$THEME_DIR/shell.json" "$TARGET_SHELL_JSON"
+elif [[ -f "$PROFILES_DIR/$THEME_SLUG.json" ]]; then
+  cp -f "$PROFILES_DIR/$THEME_SLUG.json" "$TARGET_SHELL_JSON"
+fi
