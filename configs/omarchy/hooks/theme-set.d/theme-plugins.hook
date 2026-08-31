@@ -16,10 +16,16 @@ TARGET_SHELL_JSON="$HOME/.config/omarchy/shell.json"
 # Resolution order:
 # 1. ~/.config/omarchy/themes/<theme>/shell.json
 # 2. ~/.config/omarchy/shell-profiles/<theme>.json
-# 3. ~/.config/omarchy/shell-profiles/default.json (optional fallback)
 
 if [[ -f "$THEME_DIR/shell.json" ]]; then
   cp -f "$THEME_DIR/shell.json" "$TARGET_SHELL_JSON"
 elif [[ -f "$PROFILES_DIR/$THEME_SLUG.json" ]]; then
   cp -f "$PROFILES_DIR/$THEME_SLUG.json" "$TARGET_SHELL_JSON"
+fi
+
+# Allow individual Chrome profiles to use their own account / custom themes
+# instead of enforcing a single system-wide color policy across all profiles
+rm -f /etc/opt/chrome/policies/managed/color.json /etc/chromium/policies/managed/color.json 2>/dev/null || true
+if pgrep -x chrome >/dev/null 2>&1 || pgrep -x google-chrome >/dev/null 2>&1; then
+  google-chrome-stable --refresh-platform-policy --no-startup-window &>/dev/null || true
 fi
