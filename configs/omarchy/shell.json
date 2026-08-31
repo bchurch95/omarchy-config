@@ -85,7 +85,8 @@
       ]
     },
     "position": "top",
-    "transparent": false
+    "transparent": true,
+    "id": "ben.bar"
   },
   "cloneSourceRestores": [
     "ben.media",
