@@ -90,4 +90,8 @@ o.bind("SUPER + T", "New tab", universal_shortcut("CTRL", "T", "CTRL + SHIFT", "
 -- Toggle window floating/tiling (rebound to Super + Alt + T)
 o.bind("SUPER + ALT + T", "Toggle window floating/tiling", hl.dsp.window.float({ action = "toggle" }))
 
+-- Switch workspaces (Ctrl + Left / Right)
+o.bind("CTRL + LEFT", "Previous workspace", hl.dsp.focus({ workspace = "e-1" }))
+o.bind("CTRL + RIGHT", "Next workspace", hl.dsp.focus({ workspace = "e+1" }))
+
 
