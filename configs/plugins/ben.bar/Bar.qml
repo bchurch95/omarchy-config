@@ -1009,8 +1009,9 @@ Item {
     // reveal has to rebuild them — new surface, re-shaped glyphs, re-uploaded
     // textures — which measures ~150ms against ~20ms to tear down. Parking
     // keeps the surface alive, so showing is only a margin change.
-    visible: !remapGuard.remapping
-    exclusionMode: root.barHidden ? ExclusionMode.Ignore : ExclusionMode.Auto
+    readonly property bool isVirtualScreen: !!screen && !!screen.name && (screen.name.indexOf("VIRTUAL") === 0 || screen.name.indexOf("HEADLESS") === 0)
+    visible: !remapGuard.remapping && !isVirtualScreen
+    exclusionMode: (root.barHidden || isVirtualScreen) ? ExclusionMode.Ignore : ExclusionMode.Auto
 
     ScreenMoveRemap {
       id: remapGuard
